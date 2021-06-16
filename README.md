@@ -5,7 +5,6 @@ It is a guide how to run [jitouch 2.74](http://www.jitouch.com/) at MacOS Big Su
 User agent is created that runts at start up and keeps _jitouch_ alive and directs discards all errors. 
 
 # Process
-There are X parts
 
 ## Create script file
 Script starts jitouch and discards all error messages.
@@ -75,7 +74,7 @@ launchctl load ~/Library/LaunchAgents/local.start.jitouch
 ```
 
 ### Handling load error
-If you see error `Load failed: 5: Input/output error` at the end, then some work around needed to load `.plist` file for the first tiem. See [here](https://www.reddit.com/r/MacOS/comments/kbko61/launchctl_broken/). The easiest way for me was via [LaunchControl](https://www.soma-zone.com/LaunchControl/).
+If you see error `Load failed: 5: Input/output error` at the end, then some work around needed to load `.plist` file for the first time only. See [here](https://www.reddit.com/r/MacOS/comments/kbko61/launchctl_broken/). The easiest way for me was via [LaunchControl](https://www.soma-zone.com/LaunchControl/).
 
 # All commands together
 You can run below if you trust me 😁
@@ -92,3 +91,10 @@ launchctl load local.start.jitouch
 ```
 
 See Handling load error above if face `Load failed: 5`. 
+
+# How to kill it
+You won't be able to close _jitouch_ without stopping _launchd_ script. Script will keep on restarting _jitouch_. Do following command:
+
+```
+launchctl unload ~/Library/LaunchAgents/local.start.jitouch.plist 
+```
