@@ -49,7 +49,7 @@ Create `.plist` file with following content:
 </dict>
 </plist>
 ```
-Note: script can be shorter if aboslute path provided to the `.sh` file. Just us it inside single `string` tag. 
+Note: script can be shorter if aboslute path provided to the `.sh` file. Just put it inside single `string` tag. 
 
 ### Optional: Change owner and group for _launchd_ script file
 This is not required if you run _jitouch_ for youself only. Keeping it here just in case as it took me some time to found. Assuming file name is `local.start.jitouch.plist`, execute following commands:
