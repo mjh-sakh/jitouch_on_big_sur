@@ -41,7 +41,7 @@ Create `.plist` file with following content:
     <string>local.start.jitouch</string>
     <key>ProgramArguments</key>
     <array>
-        <string>bin/sh</string>
+        <string>sh</string>
         <string>-c</string>
         <string>'~/Library/LaunchAgents/jitouch_run_script.sh'</string>
     </array>
@@ -74,6 +74,9 @@ This will activate the script and jitouch will start:
 launchctl load ~/Library/LaunchAgents/local.start.jitouch
 ```
 
+### Handling load error
+If you see error `Load failed: 5: Input/output error` at the end, then some work around needed to load `.plist` file for the first tiem. See [here](https://www.reddit.com/r/MacOS/comments/kbko61/launchctl_broken/). The easiest way for me was via [LaunchControl](https://www.soma-zone.com/LaunchControl/).
+
 # All commands together
 You can run below if you trust me 😁
 
@@ -83,9 +86,9 @@ touch jitouch_run_script.sh
 echo "#bin/zh\n~/Library/PreferencePanes/Jitouch.prefPane/Contents/Resources/Jitouch.app/Contents/MacOS/Jitouch > /dev/null 2>&1" > jitouch_run_script.sh
 chmod +x jitouch_run_script.sh
 touch local.start.jitouch.plist
-echo '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">\n<plist version="1.0">\n<dict>\n    <key>Label</key>\n    <string>local.start.jitouch</string>\n    <key>ProgramArguments</key>\n    <array>\n        <string>bin/sh</string>\n        <string>-c</string>\n        <string>\'~/Library/LaunchAgents/jitouch_run_script.sh\'</string>\n    </array>\n    <key>KeepAlive</key>\n    <true/>\n</dict>\n</plist>' > local.start.jitouch.plist
-sudo chown root local.start.jitouch.plist
-sudo chgrp wheel local.start.jitouch.plist
+echo '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">\n<plist version="1.0">\n<dict>\n    <key>Label</key>\n    <string>local.start.jitouch</string>\n    <key>ProgramArguments</key>\n    <array>\n        <string>sh</string>\n        <string>-c</string>\n        <string>Users/mjh-ao/Library/LaunchAgents/jitouch_run_script.sh</string>\n    </array>\n    <key>KeepAlive</key>\n    <true/>\n</dict>\n</plist>' > local.start.jitouch.plist
 pkill -f "Jitouch"
-launchctl load ~/Library/LaunchAgents/local.start.jitouch
+launchctl load local.start.jitouch
 ```
+
+See Handling load error above if face `Load failed: 5`. 
