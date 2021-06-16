@@ -7,7 +7,7 @@ User agent is created that runts at start up and keeps _jitouch_ alive and direc
 # Process
 
 ## Create script file
-Script starts jitouch and discards all error messages.
+Script starts _jitouch_ and discards all error messages.
 
 Navigate to `~/Library/LaunchAgents`. Create `.sh` file with following content:
 
