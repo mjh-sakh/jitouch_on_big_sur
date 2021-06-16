@@ -41,7 +41,7 @@ Create `.plist` file with following content:
     <string>local.start.jitouch</string>
     <key>ProgramArguments</key>
     <array>
-        <string>zhs</string>
+        <string>bin/sh</string>
         <string>-c</string>
         <string>~/Library/LaunchAgents/jitouch_run_script.sh</string>
     </array>
@@ -83,7 +83,7 @@ touch jitouch_run_script.sh
 echo "#bin/zh\n~/Library/PreferencePanes/Jitouch.prefPane/Contents/Resources/Jitouch.app/Contents/MacOS/Jitouch > /dev/null 2>&1" > jitouch_run_script.sh
 chmod +x jitouch_run_script.sh
 touch local.start.jitouch.plist
-echo '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">\n<plist version="1.0">\n<dict>\n    <key>Label</key>\n    <string>local.start.jitouch</string>\n    <key>ProgramArguments</key>\n    <array>\n        <string>zhs</string>\n        <string>-c</string>\n        <string>~/Library/LaunchAgents/jitouch_run_script.sh</string>\n    </array>\n    <key>KeepAlive</key>\n    <true/>\n</dict>\n</plist>' > local.start.jitouch.plist
+echo '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">\n<plist version="1.0">\n<dict>\n    <key>Label</key>\n    <string>local.start.jitouch</string>\n    <key>ProgramArguments</key>\n    <array>\n        <string>bin/sh</string>\n        <string>-c</string>\n        <string>~/Library/LaunchAgents/jitouch_run_script.sh</string>\n    </array>\n    <key>KeepAlive</key>\n    <true/>\n</dict>\n</plist>' > local.start.jitouch.plist
 sudo chown root local.start.jitouch.plist
 sudo chgrp wheel local.start.jitouch.plist
 pkill -f "Jitouch"
