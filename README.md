@@ -2,7 +2,7 @@
 It is a guide how to run [jitouch 2.74](http://www.jitouch.com/) at MacOS Big Sur. 
 
 # Overview
-User agent is created that runts at start up and keeps _jitouch_ alive and directs discards all errors. 
+User agent is created that runts at start up and keeps _jitouch_ alive by restarting it. 
 
 # Process
 
@@ -51,8 +51,8 @@ Create `.plist` file with following content:
 ```
 Note: script can be shorter if aboslute path provided to the `.sh` file. Just us it inside single `string` tag. 
 
-## Change owner and group for _launchd_ script file
-Assuming file name is `local.start.jitouch.plist`, execute following commands:
+### Optional: Change owner and group for _launchd_ script file
+This is not required if you run _jitouch_ for youself only. Keeping it here just in case as it took me some time to found. Assuming file name is `local.start.jitouch.plist`, execute following commands:
 
 ```
 sudo chown root local.start.jitouch.plist
