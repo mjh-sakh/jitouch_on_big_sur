@@ -59,6 +59,8 @@ sudo chown root local.start.jitouch.plist
 sudo chgrp wheel local.start.jitouch.plist
 ```
 
+Note that you need to place scripts to different folder to run scripts for all users. 
+
 Explanation is [here](Explanation is [here](https://stackoverflow.com/a/10508862/12488601).
 
 ## Close _jitouch_ to avoid duplicate instances running
