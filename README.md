@@ -2,7 +2,7 @@
 It is a guide how to run [jitouch 2.74](http://www.jitouch.com/) at MacOS Big Sur. 
 
 # Overview
-User agent is created that runts at start up and keeps _jitouch_ alive by restarting it. 
+User agent is created that runts at start up and keeps _jitouch_ alive by restarting it. Idea come from [this](https://v2ex.com/t/661325) terminal implementation.
 
 # Process
 
