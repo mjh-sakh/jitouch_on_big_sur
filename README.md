@@ -2,33 +2,13 @@
 It is a guide how to run [jitouch 2.74](http://www.jitouch.com/) at MacOS Big Sur. 
 
 # Overview
-User agent is created that runts at start up and keeps _jitouch_ alive by restarting it. Idea come from [this](https://v2ex.com/t/661325) terminal implementation.
+User agent is created that runs at start up and keeps _jitouch_ alive by restarting it if it fails. Idea come from [this](https://v2ex.com/t/661325) terminal script implementation.
 
 # Process
 
-## Create script file
-Script starts _jitouch_ and discards all error messages.
-
-Navigate to `~/Library/LaunchAgents`. Create `.sh` file with following content:
-
-```
-#bin/zh
-~/Library/PreferencePanes/Jitouch.prefPane/Contents/Resources/Jitouch.app/Contents/MacOS/Jitouch > /dev/null 2>&1
-```
-
-Explanation is [here](https://stackoverflow.com/a/10508862/12488601).
-
-## Make script executable
-Assumption is that script file name is `jitouch_run_script.sh`.
-
-Execute follwing command:
-```
-chmod +x jitouch_run_script.sh
-```
-
 ## Create _launchd_ file
 _launchd_ is an Apple approved way to start/stopt something at startup. See more [here](https://launchd.info/).
-Basically MacOS loads scripts from Daemons and Agents folders and execute them as specified. We will create script for user that launches above created bash script and keep it alive all the time. 
+Basically MacOS starts Daemons and Agents scripts (`.plist`). Agent may be a simple start of an app. We will create a script for user that launches __jitouch__ and keeps it alive all the time. 
 
 Create `.plist` file with following content:
 ```
@@ -36,20 +16,22 @@ Create `.plist` file with following content:
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-    <key>Label</key>
-    <string>local.start.jitouch</string>
-    <key>ProgramArguments</key>
-    <array>
-        <string>sh</string>
-        <string>-c</string>
-        <string>'~/Library/LaunchAgents/jitouch_run_script.sh'</string>
-    </array>
+	<key>Label</key>
+	<string>local.start.jitouch2</string>
+	<key>ProgramArguments</key>
+	<array>
+		<string>/Users/[YOUR USER NAME]/Library/PreferencePanes/Jitouch.prefPane/Contents/Resources/Jitouch.app/Contents/MacOS/Jitouch</string>
+	</array>
+	<key>StandardErrorPath</key>
+	<string>/dev/null</string>
+	<key>StandardOutPath</key>
+	<string>/dev/null</string>
     <key>KeepAlive</key>
     <true/>
 </dict>
 </plist>
 ```
-Note: script can be shorter if aboslute path provided to the `.sh` file. Just put it inside single `string` tag. 
+！replace ___[YOUR USER NAME]___ with your user name. 
 
 ### Optional: Change owner and group for _launchd_ script file
 This is not required if you run _jitouch_ for youself only. Keeping it here just in case as it took me some time to found. Assuming file name is `local.start.jitouch.plist`, execute following commands:
@@ -83,11 +65,25 @@ You can run below if you trust me 😁
 
 ```
 cd ~//Library/LaunchAgents
-touch jitouch_run_script.sh
-echo "#bin/zh\n~/Library/PreferencePanes/Jitouch.prefPane/Contents/Resources/Jitouch.app/Contents/MacOS/Jitouch > /dev/null 2>&1" > jitouch_run_script.sh
-chmod +x jitouch_run_script.sh
 touch local.start.jitouch.plist
-echo '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">\n<plist version="1.0">\n<dict>\n    <key>Label</key>\n    <string>local.start.jitouch</string>\n    <key>ProgramArguments</key>\n    <array>\n        <string>sh</string>\n        <string>-c</string>\n        <string>Users/mjh-ao/Library/LaunchAgents/jitouch_run_script.sh</string>\n    </array>\n    <key>KeepAlive</key>\n    <true/>\n</dict>\n</plist>' > local.start.jitouch.plist
+echo '<?xml version="1.0" encoding="UTF-8"?>' >> local.start.jitouch.plist
+echo '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">' >> local.start.jitouch.plist
+echo '<plist version="1.0">' >> local.start.jitouch.plist
+echo '<dict>' >> local.start.jitouch.plist
+echo '    <key>Label</key>' >> local.start.jitouch.plist
+echo '    <string>local.start.jitouch2</string>' >> local.start.jitouch.plist
+echo '    <key>ProgramArguments</key>' >> local.start.jitouch.plist
+echo '    <array>' >> local.start.jitouch.plist
+echo '        <string>/Users/'$(whoami)'/Library/PreferencePanes/Jitouch.prefPane/Contents/Resources/Jitouch.app/Contents/MacOS/Jitouch</string>' >> local.start.jitouch.plist
+echo '    </array>' >> local.start.jitouch.plist
+echo '    <key>StandardErrorPath</key>' >> local.start.jitouch.plist
+echo '    <string>/dev/null</string>' >> local.start.jitouch.plist
+echo '    <key>StandardOutPath</key>' >> local.start.jitouch.plist
+echo '    <string>/dev/null</string>' >> local.start.jitouch.plist
+echo '    <key>KeepAlive</key>' >> local.start.jitouch.plist
+echo '    <true/>' >> local.start.jitouch.plist
+echo '</dict>' >> local.start.jitouch.plist
+echo '</plist>' >> local.start.jitouch.plist
 pkill -f "Jitouch"
 launchctl load local.start.jitouch
 ```
