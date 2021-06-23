@@ -78,7 +78,52 @@ launchctl load local.start.jitouch
 
 See Handling load error above if face `Load failed: 5`. 
 
-# How to kill it
+# Kill duplicate process
+I noticed that second Jitouche process starts after computer wakes. I'm still working on proper way to kill second process. Here is intermediate solution that checks if second process is present every 60 seconds and kills it. 
+
+## Create bash killer script
+
+Bash script will list all processes (`launchctl list`), find 'Jitouch' process (`grep`), get its name (`-o` and regex), and stops it (`launchctl stop`).
+
+```
+cd ~/Library/LaunchAgents
+touch jitouch_kill_duplicate.sh
+echo "#bin/zh" >> jitouch_kill_duplicate.sh
+echo "launchctl list | grep -o '[a-zA-Z0-9\.]*Jitouch[a-zA-Z0-9\.]*' | xargs -I {} launchctl stop {}" >> jitouch_kill_duplicate.sh
+```
+
+## Create _plist_ to run periodically
+Same as with _jitouch_, we create agent that executes killer script every 60 seconds. 
+
+```
+cd ~/Library/LaunchAgents
+touch local.kill.duplicate.jitouch.plist 
+echo '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">' >> local.start.jitouch.plist
+echo '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">' >> local.kill.duplicate.jitouch.plist
+echo '<plist version="1.0">' >> local.kill.duplicate.jitouch.plist
+echo '<dict>' >> local.kill.duplicate.jitouch.plist
+echo '    <key>Label</key>' >> local.kill.duplicate.jitouch.plist
+echo '    <string>local.kill.duplicate.jitouch</string>' >> local.kill.duplicate.jitouch.plist
+echo '    <key>ProgramArguments</key>' >> local.kill.duplicate.jitouch.plist
+echo '    <array>' >> local.kill.duplicate.jitouch.plist
+echo '        <string>Users/'$(whoami)'/Library/LaunchAgents/jitouch_kill_duplicate.sh</string>' >> local.kill.duplicate.jitouch.plist
+echo '    </array>' >> local.kill.duplicate.jitouch.plist
+echo '    <key>RunAtLoad</key>' >> local.kill.duplicate.jitouch.plist
+echo '    <true/>' >> local.kill.duplicate.jitouch.plist
+echo '    <key>StartInterval</key>' >> local.kill.duplicate.jitouch.plist
+echo '    <integer>60</integer>' >> local.kill.duplicate.jitouch.plist
+echo '</dict>' >> local.kill.duplicate.jitouch.plist
+echo '</plist>' >> local.kill.duplicate.jitouch.plist
+```
+
+## Load launchd script
+
+```
+launchctl load  ~/Library/LaunchAgents/local.kill.duplicate.jitouch.plist
+```
+See Handling load error above if face `Load failed: 5`. 
+
+# How to kill it completely
 You won't be able to close _jitouch_ without stopping _launchd_ script. Script will keep on restarting _jitouch_. Do following command:
 
 ```
